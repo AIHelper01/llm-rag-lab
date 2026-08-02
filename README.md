@@ -32,29 +32,47 @@ llm-rag/
 
 - Python 3.12
 - Jupyter Notebook 或 JupyterLab
-- Ollama Embedding/Reranker 服务
+- vLLM/Ollama Embedding/Reranker 服务
 - Milvus 2.6.x
-- 可访问的 SiliconFlow 或 DeepSeek API
 
-安装依赖：
+推荐使用 Python 3.12，并为项目创建独立虚拟环境。以下两种方式任选其一。
 
 ```bash
-pip install -r requirement.txt
+git clone https://gitee.com/coderwillyan/python_datasci_lab.git
+cd python_datasci_lab
 ```
 
-也可以使用项目的 `pyproject.toml`：
+### 方式一：Conda
 
 ```bash
+conda create --name env_pysci python=3.12 -y
+
+conda activate env_rag
+
+pip install ipykernel
+
+python -m ipykernel install \
+--user \
+--name=env_pysci \
+--display-name "Python 3.12 (env_rag)"
+```
+
+### 方式二：uv （推荐）
+
+```bash
+uv venv --python=3.12
+
 uv sync
+
+uv add ipykernel
+
+uv run ipython kernel install \
+--user \
+--name env_rag \
+--display-name "Python 3.12 (env_rag)"
 ```
 
-建议注册独立的 Jupyter Kernel：
-
-```bash
-python -m ipykernel install --user --name env_rag --display-name "Python (env_rag)"
-```
-
-## 4. 配置 API Key
+## 4. 配置 API Key (示例)
 
 在仓库根目录创建 `.env`：
 
@@ -78,35 +96,34 @@ load_dotenv(env_path)
 
 | 能力 | 默认配置 |
 | --- | --- |
-| 大语言模型 | SiliconFlow `Qwen/Qwen3-8B` |
-| 可选大语言模型 | DeepSeek 官方 API `deepseek-v4-flash` |
+| 大语言模型 | 本地墨模型/SiliconFlow/DeepSeek |
 | Embedding | Ollama `qwen3-embedding:0.6b` |
 | Reranker | Ollama `dengcao/Qwen3-Reranker-0.6B:Q8_0` |
-| Milvus | `http://192.168.1.199:19530` |
-| Ollama | `http://192.168.1.166:11434` |
+| Milvus | `http://xxx:19530` |
+| Ollama | `http://xxx:11434` |
 
-默认使用 SiliconFlow：
+推荐使用本地QWEN模型：
 
 ```python
+import os
+import httpx
+from dotenv import load_dotenv,find_dotenv
+from langchain.chat_models import init_chat_model
+
+# ── 1. 大语言模型配置 ─────────────────────────────
+# env_path = "../.env"
+_ = load_dotenv(find_dotenv())
+
 my_llm = init_chat_model(
-    model="Qwen/Qwen3-8B",
+    model=os.getenv("vLLM_QWEN122B_MODEL_ID"),
     model_provider="openai",
-    base_url="https://api.siliconflow.cn/v1",
-    api_key=os.getenv("SILICONFLOW_API_KEY"),
-)
-```
-
-切换到 DeepSeek：
-
-```python
-deepseek_llm = init_chat_model(
-    model="deepseek-v4-flash",
-    model_provider="openai",
-    base_url="https://api.deepseek.com",
-    api_key=os.getenv("DEEPSEEK_API_KEY"),
+    base_url=os.getenv("vLLM_QWEN122B_BASE_URL"),
+    api_key=os.getenv("vLLM_QWEN122B_API_KEY"),
+    http_client=httpx.Client(trust_env=False),
+    temperature=0.3,
+    max_tokens=10000,
 )
 
-my_llm = deepseek_llm
 ```
 
 ## 6. Milvus Collection
