@@ -38,7 +38,7 @@ llm-rag/
 推荐使用 Python 3.12，并为项目创建独立虚拟环境。以下两种方式任选其一。
 
 ```bash
-git clone https://gitee.com/coderwillyan/python_datasci_lab.git
+git clone https://gitee.com/coderwillyan/llm-rag-lab.git
 cd python_datasci_lab
 ```
 
