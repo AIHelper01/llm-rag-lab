@@ -21,6 +21,7 @@ dependencies = [
     "rank-bm25>=0.2.2",
     "sentence-transformers>=5.0.0",
     "unstructured[pdf]==0.23.1",
+    "xinference>=1.17.1",
     "xinference-client==1.13.0",
 ]
 
