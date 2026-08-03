@@ -39,13 +39,13 @@ llm-rag/
 
 ```bash
 git clone https://gitee.com/coderwillyan/llm-rag-lab.git
-cd python_datasci_lab
+cd env_rag
 ```
 
 ### 方式一：Conda
 
 ```bash
-conda create --name env_pysci python=3.12 -y
+conda create --name env_rag python=3.12 -y
 
 conda activate env_rag
 
