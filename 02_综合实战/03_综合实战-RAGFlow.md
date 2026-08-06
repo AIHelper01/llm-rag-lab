@@ -591,3 +591,34 @@ REDIS_PORT=26379 \
 docker compose -f docker-compose.yml -p docker_ragflow2180 up -d
 
 ```
+
+```bash
+SVR_WEB_HTTP_PORT=3180 \
+SVR_WEB_HTTPS_PORT=31443 \
+SVR_HTTP_PORT=39380 \
+ADMIN_SVR_HTTP_PORT=39381 \
+SVR_MCP_PORT=39382 \
+MINIO_PORT=39000 \
+MINIO_CONSOLE_PORT=39001 \
+ES_PORT=31200 \
+MYSQL_PORT=35455 \
+REDIS_PORT=36379 \
+docker compose -f docker-compose.yml -p docker_ragflow3180 up -d
+
+```
+
+
+```bash
+SVR_WEB_HTTP_PORT=4180 \
+SVR_WEB_HTTPS_PORT=41443 \
+SVR_HTTP_PORT=49380 \
+ADMIN_SVR_HTTP_PORT=49381 \
+SVR_MCP_PORT=49382 \
+MINIO_PORT=49000 \
+MINIO_CONSOLE_PORT=49001 \
+ES_PORT=41200 \
+MYSQL_PORT=45455 \
+REDIS_PORT=46379 \
+docker compose -f docker-compose.yml -p docker_ragflow4180 up -d
+
+```
