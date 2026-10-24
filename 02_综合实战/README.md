@@ -35,7 +35,7 @@
 - Python 3.12
 - Jupyter Notebook 或 JupyterLab
 - vLLM/Ollama Embedding/Reranker 服务
-- Milvus 2.6.x
+- Milvus 3.x（客户端 `pymilvus` 3.0.x）
 
 推荐 Python 3.12，**默认用 uv**（在仓库根执行，中英两侧共用同一个 `.venv`）：
 
@@ -104,7 +104,7 @@ load_dotenv(env_path)
 | 大语言模型 | vLLM（OpenAI 兼容 `/v1`） | `vLLM_QWEN_BASE_URL` / `vLLM_QWEN_API_KEY` / `vLLM_QWEN_MODEL_ID` | `my_qwen3.8_flash_next` |
 | Embedding | Xinference（`/v1/embeddings`） | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_EMBEDDING_MODEL_ID` | `my_qwen3_embedding_0.6b`（1024 维） |
 | Reranker | Xinference（`/v1/rerank`） | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_RERANKER_MODEL_ID` | `my_qwen3_reranker_0.6b` |
-| 向量数据库 | Milvus standalone | Notebook 内 `connection_args` | `http://xxx:19530` |
+| 向量数据库 | Milvus standalone（本机 Docker） | `MILVUS_URI` | `http://localhost:19530` |
 
 Embedding 与 Reranker 由同一个 Xinference 实例提供：`XINFERENCE_BASE_URL` 是原生 REST 根地址（给 `xinference.client` 用），`XINFERENCE_OPENAI_BASE_URL` 是它的 `/v1` 兼容地址（给 OpenAI 风格客户端用），两者共用 `XINFERENCE_API_KEY`。`make doctor` 会检查这些键是否齐全。
 

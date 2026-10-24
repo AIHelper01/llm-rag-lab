@@ -81,11 +81,17 @@ python3 scripts/check_parity.py
 
 ## 4. API keys
 
-Create `.env` in the repository root (this file is unfortunately tracked in Git for historical reasons, see section 7):
+Create `.env` in the repository root (it is ignored by `.gitignore`; copy the template):
+
+```bash
+cp .env.example .env    # then fill in your own endpoints and keys
+```
 
 ```dotenv
-SILICONFLOW_API_KEY=your_siliconflow_key
-DEEPSEEK_API_KEY=your_deepseek_key
+vLLM_QWEN_BASE_URL = "http://<your-host>:3791/v1"
+XINFERENCE_OPENAI_BASE_URL = "http://<your-host>:3797/v1"
+XINFERENCE_API_KEY = "<your-xinference-key>"
+MILVUS_URI = "http://localhost:19530"
 ```
 
 Notebooks running from the capstone directory read `../.env`; from the repository root they read `.env`. Check where you actually are:
@@ -104,9 +110,9 @@ The unified configuration pattern lives in the master notebook `model-configurat
 | LLM | vLLM (OpenAI-compatible `/v1`) | `vLLM_QWEN_BASE_URL` / `vLLM_QWEN_API_KEY` / `vLLM_QWEN_MODEL_ID` | `my_qwen3.8_flash_next` |
 | Embedding | Xinference (`/v1/embeddings`) | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_EMBEDDING_MODEL_ID` | `my_qwen3_embedding_0.6b` (1024-dim) |
 | Reranker | Xinference (`/v1/rerank`) | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_RERANKER_MODEL_ID` | `my_qwen3_reranker_0.6b` |
-| Vector store | Milvus standalone | `connection_args` inside the notebooks | `http://xxx:19530` |
+| Vector store | Milvus standalone (local Docker) | `MILVUS_URI` | `http://localhost:19530` |
 
-Embedding and the reranker share one Xinference instance: `XINFERENCE_BASE_URL` is the native REST root (for `xinference.client`), `XINFERENCE_OPENAI_BASE_URL` is its `/v1` compatibility root, and both use `XINFERENCE_API_KEY`. `make doctor` checks that these keys exist.
+Embedding and the reranker share one Xinference instance: `XINFERENCE_BASE_URL` is the native REST root (for `xinference.client`), `XINFERENCE_OPENAI_BASE_URL` is its `/v1` compatibility root, and both use `XINFERENCE_API_KEY`. `make doctor` checks that these keys exist. The vector store is a Milvus standalone container on your machine (Attu dashboard at `http://localhost:16630`), with the `pymilvus` client pinned to 3.0.x to match the server. For the recall-then-rerank pattern in LangChain, see the master notebook `model-configuration` (Chinese): LangChain has no native Xinference rerank integration, so `/v1/rerank` is wrapped in a custom `BaseDocumentCompressor`.
 
 ## 6. Layout
 
@@ -128,5 +134,5 @@ llm-rag-lab/
 ## 7. Security notes
 
 - Never put API keys in notebooks, the README, or logs.
-- **Heads up**: `.env` was committed to this repository in the past, which contradicts the rule above. Rotate any key that entered history, and once collaborators are informed and have backups, stop tracking it with `git rm --cached .env`.
+- **Heads up**: `.env` was committed to this repository in the past; it is now untracked with `git rm --cached .env` and listed in `.gitignore`. Keys that entered history still need rotating. `make doctor` only reports key names, never values.
 - In production, inject credentials from a secret manager and restrict network access to Milvus, Ollama, and similar services.

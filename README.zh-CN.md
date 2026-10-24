@@ -88,11 +88,17 @@ python3 scripts/check_parity.py
 
 ## 4. 配置密钥
 
-在仓库根目录准备 `.env`（该文件当前已被 Git 跟踪，属于历史遗留，见第 7 节安全提醒）：
+在仓库根目录准备 `.env`（该文件已被 `.gitignore` 忽略，不要提交；从模板复制即可）：
+
+```bash
+cp .env.example .env    # 再填入自己的地址与密钥
+```
 
 ```dotenv
-SILICONFLOW_API_KEY=你的_SiliconFlow_API_Key
-DEEPSEEK_API_KEY=你的_DeepSeek_API_Key
+vLLM_QWEN_BASE_URL = "http://<你的服务器>:3791/v1"
+XINFERENCE_OPENAI_BASE_URL = "http://<你的服务器>:3797/v1"
+XINFERENCE_API_KEY = "<你的_Xinference_密钥>"
+MILVUS_URI = "http://localhost:19530"
 ```
 
 Notebook 若在 `02_综合实战` 子目录下运行，读取路径为 `../.env`；从仓库根运行则为 `.env`。用 `uv run jupyter lab` / 启动脚本时工作目录即模块目录，可用下列代码确认：
@@ -111,9 +117,9 @@ print(Path.cwd())
 | 大语言模型 | vLLM（OpenAI 兼容 `/v1`） | `vLLM_QWEN_BASE_URL` / `vLLM_QWEN_API_KEY` / `vLLM_QWEN_MODEL_ID` | `my_qwen3.8_flash_next` |
 | Embedding | Xinference（`/v1/embeddings`） | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_EMBEDDING_MODEL_ID` | `my_qwen3_embedding_0.6b`（1024 维） |
 | Reranker | Xinference（`/v1/rerank`） | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_RERANKER_MODEL_ID` | `my_qwen3_reranker_0.6b` |
-| 向量数据库 | Milvus standalone | Notebook 内 `connection_args` | `http://xxx:19530` |
+| 向量数据库 | Milvus standalone（本机 Docker） | `MILVUS_URI` | `http://localhost:19530` |
 
-Embedding 与 Reranker 由同一个 Xinference 实例提供：`XINFERENCE_BASE_URL` 是原生 REST 根地址（给 `xinference.client` 用），`XINFERENCE_OPENAI_BASE_URL` 是它的 `/v1` 兼容地址（给 OpenAI 风格客户端用），两者共用 `XINFERENCE_API_KEY`。`make doctor` 会检查这些键是否齐全。
+Embedding 与 Reranker 由同一个 Xinference 实例提供：`XINFERENCE_BASE_URL` 是原生 REST 根地址（给 `xinference.client` 用），`XINFERENCE_OPENAI_BASE_URL` 是它的 `/v1` 兼容地址（给 OpenAI 风格客户端用），两者共用 `XINFERENCE_API_KEY`。`make doctor` 会检查这些键是否齐全。向量库用本机 Docker 起的 Milvus standalone（Attu 面板 `http://localhost:16630`），客户端 `pymilvus` 锁 3.0.x 与服务端同大版本；Milvus 召回 + Rerank 精排的 LangChain 写法见 [模型统一配置说明.ipynb](<%E6%A8%A1%E5%9E%8B%E7%BB%9F%E4%B8%80%E9%85%8D%E7%BD%AE%E8%AF%B4%E6%98%8E.ipynb>)——LangChain 没有 Xinference rerank 的原生集成，需要自定义 `BaseDocumentCompressor` 包一层 `/v1/rerank`。
 
 综合实战的 Collection、运行顺序、评测指标与常见问题，见 [02_综合实战/README.md](<02_%E7%BB%BC%E5%90%88%E5%AE%9E%E6%88%98/README.md>)。
 
@@ -138,5 +144,5 @@ llm-rag-lab/
 ## 7. 安全提醒
 
 - 不要把 API Key 写进 Notebook、README 或日志；提交前检查 `.env` 未被加入差异。
-- **注意**：本仓库历史上把 `.env` 提交进了版本库（README 自身的约定与之冲突）。请轮换曾入库的密钥，并在确认后执行 `git rm --cached .env` 停止跟踪（该操作会让他人拉取时删除本地 `.env`，请先通知协作者并备份）。
+- **注意**：`.env` 历史上曾被提交进版本库，现已 `git rm --cached` 停止跟踪并写进 `.gitignore`。曾入库的密钥仍需轮换；`make doctor` 只报告键名，绝不打印值。
 - 生产环境通过密钥管理服务注入凭据，并限制 Milvus、Ollama 等服务的网络访问范围。

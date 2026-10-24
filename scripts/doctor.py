@@ -22,12 +22,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_KEYS = ["vLLM_QWEN_BASE_URL", "vLLM_QWEN_API_KEY", "vLLM_QWEN_MODEL_ID",
                "XINFERENCE_OPENAI_BASE_URL", "XINFERENCE_API_KEY",
-               "XINFERENCE_EMBEDDING_MODEL_ID", "XINFERENCE_RERANKER_MODEL_ID"]
+               "XINFERENCE_EMBEDDING_MODEL_ID", "XINFERENCE_RERANKER_MODEL_ID",
+               "MILVUS_URI"]
 OPTIONAL_KEYS = ["XINFERENCE_BASE_URL"]
 KEY_IMPORTS = {
     "langchain": "langchain",
     "langchain-openai": "langchain_openai",
     "langchain-milvus": "langchain_milvus",
+    "pymilvus": "pymilvus",
     "xinference-client": "xinference_client",
     "jupyter": "jupyter_server",
 }
