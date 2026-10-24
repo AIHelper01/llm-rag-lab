@@ -99,7 +99,7 @@ PENDING_REASONS = {
         "Capstone notebooks need a live Milvus + embedding stack to regenerate English outputs",
     "02_综合实战/03_综合实战-RAGFlow.md": "Translation queue: platform chapter follows the notebooks",
     "03_范式拓展/01_Karpathy式AI知识库搭建指南.md": "Translation queue: extension chapter comes after the core course",
-    "模型统一配置说明.ipynb": "Needs a live model stack to regenerate English outputs; translates with the capstone",
+    "模型统一配置说明.ipynb": "Translation queue: English outputs need the same vLLM + Xinference stack, translates with the capstone",
 }
 
 # 不参与双语配对（数据 / 资源 / vendored 代码 / 单侧文档）：前缀 → 原因。

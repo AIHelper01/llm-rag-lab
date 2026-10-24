@@ -97,38 +97,36 @@ load_dotenv(env_path)
 
 ## 5. 模型与服务
 
-默认配置如下，请按实际环境修改地址：
+统一配置写法见 [模型统一配置说明.ipynb](<../%E6%A8%A1%E5%9E%8B%E7%BB%9F%E4%B8%80%E9%85%8D%E7%BD%AE%E8%AF%B4%E6%98%8E.ipynb>)，仓库根 `.env` 就是这套配置：
 
-| 能力 | 默认配置 |
-| --- | --- |
-| 大语言模型 | 本地墨模型/SiliconFlow/DeepSeek |
-| Embedding | Ollama `qwen3-embedding:0.6b` |
-| Reranker | Ollama `dengcao/Qwen3-Reranker-0.6B:Q8_0` |
-| Milvus | `http://xxx:19530` |
-| Ollama | `http://xxx:11434` |
+| 能力 | 服务 | 环境变量 | 模型 |
+| --- | --- | --- | --- |
+| 大语言模型 | vLLM（OpenAI 兼容 `/v1`） | `vLLM_QWEN_BASE_URL` / `vLLM_QWEN_API_KEY` / `vLLM_QWEN_MODEL_ID` | `my_qwen3.8_flash_next` |
+| Embedding | Xinference（`/v1/embeddings`） | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_EMBEDDING_MODEL_ID` | `my_qwen3_embedding_0.6b`（1024 维） |
+| Reranker | Xinference（`/v1/rerank`） | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_RERANKER_MODEL_ID` | `my_qwen3_reranker_0.6b` |
+| 向量数据库 | Milvus standalone | Notebook 内 `connection_args` | `http://xxx:19530` |
 
-推荐使用本地QWEN模型：
+Embedding 与 Reranker 由同一个 Xinference 实例提供：`XINFERENCE_BASE_URL` 是原生 REST 根地址（给 `xinference.client` 用），`XINFERENCE_OPENAI_BASE_URL` 是它的 `/v1` 兼容地址（给 OpenAI 风格客户端用），两者共用 `XINFERENCE_API_KEY`。`make doctor` 会检查这些键是否齐全。
+
+大语言模型统一配置写法：
 
 ```python
 import os
 import httpx
-from dotenv import load_dotenv,find_dotenv
+from dotenv import load_dotenv, find_dotenv
 from langchain.chat_models import init_chat_model
 
-# ── 1. 大语言模型配置 ─────────────────────────────
-# env_path = "../.env"
 _ = load_dotenv(find_dotenv())
 
 my_llm = init_chat_model(
-    model=os.getenv("vLLM_QWEN122B_MODEL_ID"),
+    model=os.getenv("vLLM_QWEN_MODEL_ID"),
     model_provider="openai",
-    base_url=os.getenv("vLLM_QWEN122B_BASE_URL"),
-    api_key=os.getenv("vLLM_QWEN122B_API_KEY"),
+    base_url=os.getenv("vLLM_QWEN_BASE_URL"),
+    api_key=os.getenv("vLLM_QWEN_API_KEY"),
     http_client=httpx.Client(trust_env=False),
     temperature=0.3,
-    max_tokens=10000,
+    max_tokens=4096,
 )
-
 ```
 
 ## 6. Milvus Collection
@@ -214,12 +212,22 @@ print(Path.cwd())
 
 确认 Milvus 已启动，并检查 `connection_args` 中的 URI。默认端口为 `19530`。
 
-### Ollama 连接失败
+### Embedding / Reranker 调用失败
 
-确认 Ollama 服务可访问，并检查模型是否存在：
+确认 Xinference 服务可访问，并检查模型是否已启动（两个模型共用同一个 API Key）：
 
 ```bash
-ollama list
+curl -s -H "Authorization: Bearer $XINFERENCE_API_KEY" "$XINFERENCE_BASE_URL/v1/models" | head -c 400
+```
+
+Embedding 走 `/v1/embeddings`，Reranker 走 `/v1/rerank`；模型名要和 `XINFERENCE_EMBEDDING_MODEL_ID`、`XINFERENCE_RERANKER_MODEL_ID` 完全一致。
+
+### 大语言模型调用失败
+
+确认 vLLM 在线并加载了目标模型：
+
+```bash
+curl -s -H "Authorization: Bearer $vLLM_QWEN_API_KEY" "$vLLM_QWEN_BASE_URL/models" | head -c 400
 ```
 
 ### 混合检索误走单一检索

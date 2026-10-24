@@ -20,12 +20,15 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-REQUIRED_KEYS = ["SILICONFLOW_API_KEY", "DEEPSEEK_API_KEY"]
-OPTIONAL_KEYS = ["OLLAMA_EMBD_BASE_URL", "OLLAMA_EMBD_MODEL_ID", "OLLAMA_RERANK_MODEL_ID", "SILICONFLOW_BASE_URL"]
+REQUIRED_KEYS = ["vLLM_QWEN_BASE_URL", "vLLM_QWEN_API_KEY", "vLLM_QWEN_MODEL_ID",
+               "XINFERENCE_OPENAI_BASE_URL", "XINFERENCE_API_KEY",
+               "XINFERENCE_EMBEDDING_MODEL_ID", "XINFERENCE_RERANKER_MODEL_ID"]
+OPTIONAL_KEYS = ["XINFERENCE_BASE_URL"]
 KEY_IMPORTS = {
     "langchain": "langchain",
     "langchain-openai": "langchain_openai",
     "langchain-milvus": "langchain_milvus",
+    "xinference-client": "xinference_client",
     "jupyter": "jupyter_server",
 }
 results: list = []
@@ -78,10 +81,12 @@ def main() -> int:
                 record("warn", ".env 已被 Git 跟踪", "历史遗留：轮换入库密钥，通知协作者后再 git rm --cached .env")
 
     for package, module in KEY_IMPORTS.items():
-        if importlib.util.find_spec(module) is None:
-            record("warn", package, f"当前解释器未安装（先 uv sync，再用 uv run 启动 Notebook）")
-        else:
-            record("pass", package, "可导入")
+        try:
+            installed = importlib.util.find_spec(module) is not None
+        except (ImportError, ValueError):
+            installed = False
+        record("pass" if installed else "warn", package,
+               "可导入" if installed else "当前解释器未安装（用 uv 环境或 ~/env_rag_uv，见 README）")
 
     for level, label, detail in results:
         print(f"[{level.upper():4}] {label}: {detail}")

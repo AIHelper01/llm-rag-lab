@@ -32,7 +32,15 @@ uv sync                       # 装齐依赖（首次会下载 Python 3.12 与�
 uv run jupyter lab            # 启动 JupyterLab
 ```
 
-注册内核（Notebook 需要选择内核时）：
+课堂/本机内核沿用同一套命名：`~/env_rag_uv`（与 `~/env_agent_uv`、`~/env_dl_uv` 同构——独立的 uv 工程目录 + `.venv` + Jupyter 内核）。
+
+```bash
+cd ~/env_rag_uv && uv sync
+.venv/bin/python -m ipykernel install --user --name env_rag_uv --display-name "Python (env_rag_uv)"
+uv run --no-sync jupyter lab ../workspace/llm-rag-lab     # 在 JupyterLab 里选内核 env_rag_uv
+```
+
+只想要仓库自带的 `.venv`，也可以给它注册一个内核（课堂内核请用上面的 `env_rag_uv`）：
 
 ```bash
 uv run python -m ipykernel install --user --name env_rag --display-name "Python 3.12 (llm-rag-lab)"
@@ -96,15 +104,16 @@ print(Path.cwd())
 
 ## 5. 模型与服务
 
-统一配置写法见 [模型统一配置说明.ipynb](<%E6%A8%A1%E5%9E%8B%E7%BB%9F%E4%B8%80%E9%85%8D%E7%BD%AE%E8%AF%B4%E6%98%8E.ipynb>)，默认值如下，请按实际环境修改：
+统一配置写法见 [模型统一配置说明.ipynb](<%E6%A8%A1%E5%9E%8B%E7%BB%9F%E4%B8%80%E9%85%8D%E7%BD%AE%E8%AF%B4%E6%98%8E.ipynb>)，`.env` 就是这套配置：
 
-| 能力 | 默认配置 |
-| --- | --- |
-| 大语言模型 | 本地 Qwen / SiliconFlow / DeepSeek |
-| Embedding | Ollama `qwen3-embedding:0.6b` |
-| Reranker | Ollama `dengcao/Qwen3-Reranker-0.6B:Q8_0` |
-| Milvus | `http://xxx:19530` |
-| Ollama | `http://xxx:11434` |
+| 能力 | 服务 | 环境变量 | 模型 |
+| --- | --- | --- | --- |
+| 大语言模型 | vLLM（OpenAI 兼容 `/v1`） | `vLLM_QWEN_BASE_URL` / `vLLM_QWEN_API_KEY` / `vLLM_QWEN_MODEL_ID` | `my_qwen3.8_flash_next` |
+| Embedding | Xinference（`/v1/embeddings`） | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_EMBEDDING_MODEL_ID` | `my_qwen3_embedding_0.6b`（1024 维） |
+| Reranker | Xinference（`/v1/rerank`） | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_RERANKER_MODEL_ID` | `my_qwen3_reranker_0.6b` |
+| 向量数据库 | Milvus standalone | Notebook 内 `connection_args` | `http://xxx:19530` |
+
+Embedding 与 Reranker 由同一个 Xinference 实例提供：`XINFERENCE_BASE_URL` 是原生 REST 根地址（给 `xinference.client` 用），`XINFERENCE_OPENAI_BASE_URL` 是它的 `/v1` 兼容地址（给 OpenAI 风格客户端用），两者共用 `XINFERENCE_API_KEY`。`make doctor` 会检查这些键是否齐全。
 
 综合实战的 Collection、运行顺序、评测指标与常见问题，见 [02_综合实战/README.md](<02_%E7%BB%BC%E5%90%88%E5%AE%9E%E6%88%98/README.md>)。
 

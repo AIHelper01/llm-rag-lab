@@ -34,6 +34,8 @@ deep-learning-lab 的同类课程要求**两侧目录与文件名都是 ASCII**�
 
 - **一个 uv 工程：仓库根**（`pyproject.toml` + `uv.lock` + `.python-version`）。中英两侧共用根 `.venv`，`uv sync` 一次装齐。
 - 默认启动：`uv sync` → `uv run jupyter lab`；或 `./start-notebooks.sh --language zh-CN|en --module foundations|capstone|frontiers`（Windows 用 `start-notebooks.ps1 -Language ... -Module ...`）。
+- **本机/课堂内核**：`~/env_rag_uv`（独立 uv 工程目录 + `.venv` + Jupyter 内核 `env_rag_uv`），与 `~/env_agent_uv`、`~/env_dl_uv` 同构；它只装课件运行期需要的包，重型的 PDF 解析依赖按需 `uv add`。仓库根 `.venv` 与它互相独立，两侧都用同一份 `.env`。
+- 课件里的实跑输出写成 `**预期输出：**` + ```text 代码块（与 deep-learning-lab 一致），必须由真实环境真实执行得到，不得手写编造；换环境重跑后要同步更新。
 - `requirement.txt` 是 Conda 路线的遗留清单，**只读对照**，不要往里加新依赖。
 - 文档中的命令必须注明工作目录；除特别说明外都在仓库根执行。
 

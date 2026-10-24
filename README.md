@@ -32,7 +32,15 @@ uv sync                       # installs all dependencies (first run may downloa
 uv run jupyter lab            # start JupyterLab
 ```
 
-Register the kernel when the notebook asks you to pick one:
+The classroom kernel follows the same naming as `~/env_agent_uv` and `~/env_dl_uv`: `~/env_rag_uv` is a standalone uv project with its own `.venv` and a Jupyter kernel.
+
+```bash
+cd ~/env_rag_uv && uv sync
+.venv/bin/python -m ipykernel install --user --name env_rag_uv --display-name "Python (env_rag_uv)"
+uv run --no-sync jupyter lab ../workspace/llm-rag-lab     # then pick the env_rag_uv kernel
+```
+
+To register a kernel for the repository `.venv` instead (use `env_rag_uv` for the classroom setup):
 
 ```bash
 uv run python -m ipykernel install --user --name env_rag --display-name "Python 3.12 (llm-rag-lab)"
@@ -89,15 +97,16 @@ print(Path.cwd())
 
 ## 5. Models and services
 
-The unified configuration pattern is documented in the master notebook `model-configuration` (Chinese). Defaults to adjust for your environment:
+The unified configuration pattern lives in the master notebook `model-configuration` (Chinese), and `.env` holds exactly this stack:
 
-| Capability | Default |
-| --- | --- |
-| LLM | local Qwen / SiliconFlow / DeepSeek |
-| Embedding | Ollama `qwen3-embedding:0.6b` |
-| Reranker | Ollama `dengcao/Qwen3-Reranker-0.6B:Q8_0` |
-| Milvus | `http://xxx:19530` |
-| Ollama | `http://xxx:11434` |
+| Capability | Service | Environment variables | Model |
+| --- | --- | --- | --- |
+| LLM | vLLM (OpenAI-compatible `/v1`) | `vLLM_QWEN_BASE_URL` / `vLLM_QWEN_API_KEY` / `vLLM_QWEN_MODEL_ID` | `my_qwen3.8_flash_next` |
+| Embedding | Xinference (`/v1/embeddings`) | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_EMBEDDING_MODEL_ID` | `my_qwen3_embedding_0.6b` (1024-dim) |
+| Reranker | Xinference (`/v1/rerank`) | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_RERANKER_MODEL_ID` | `my_qwen3_reranker_0.6b` |
+| Vector store | Milvus standalone | `connection_args` inside the notebooks | `http://xxx:19530` |
+
+Embedding and the reranker share one Xinference instance: `XINFERENCE_BASE_URL` is the native REST root (for `xinference.client`), `XINFERENCE_OPENAI_BASE_URL` is its `/v1` compatibility root, and both use `XINFERENCE_API_KEY`. `make doctor` checks that these keys exist.
 
 ## 6. Layout
 
