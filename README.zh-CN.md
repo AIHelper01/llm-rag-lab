@@ -119,7 +119,7 @@ print(Path.cwd())
 | Reranker | Xinference（`/v1/rerank`） | `XINFERENCE_OPENAI_BASE_URL` / `XINFERENCE_API_KEY` / `XINFERENCE_RERANKER_MODEL_ID` | `my_qwen3_reranker_0.6b` |
 | 向量数据库 | Milvus standalone（本机 Docker） | `MILVUS_URI` | `http://localhost:19530` |
 
-Embedding 与 Reranker 由同一个 Xinference 实例提供：`XINFERENCE_BASE_URL` 是原生 REST 根地址（给 `xinference.client` 用），`XINFERENCE_OPENAI_BASE_URL` 是它的 `/v1` 兼容地址（给 OpenAI 风格客户端用），两者共用 `XINFERENCE_API_KEY`。`make doctor` 会检查这些键是否齐全。向量库用本机 Docker 起的 Milvus standalone（Attu 面板 `http://localhost:16630`），客户端 `pymilvus` 锁 3.0.x 与服务端同大版本；Milvus 召回 + Rerank 精排的 LangChain 写法见 [模型统一配置说明.ipynb](<%E6%A8%A1%E5%9E%8B%E7%BB%9F%E4%B8%80%E9%85%8D%E7%BD%AE%E8%AF%B4%E6%98%8E.ipynb>)——LangChain 没有 Xinference rerank 的原生集成，需要自定义 `BaseDocumentCompressor` 包一层 `/v1/rerank`。
+Embedding 与 Reranker 由同一个 Xinference 实例提供：`XINFERENCE_BASE_URL` 是原生 REST 根地址（给 `xinference.client` 用），`XINFERENCE_OPENAI_BASE_URL` 是它的 `/v1` 兼容地址（给 OpenAI 风格客户端用），两者共用 `XINFERENCE_API_KEY`。`make doctor` 会检查这些键是否齐全。向量库用本机 Docker 起的 Milvus standalone（v3.0.3，`docker compose` 起法见 [02_综合实战/README.md](<02_%E7%BB%BC%E5%90%88%E5%AE%9E%E6%88%98/README.md>)；Attu 面板端口以启动参数为准，标准命令是 `http://localhost:9092`，`docker port attu` 可确认），客户端 `pymilvus` 锁 3.0.x 与服务端同大版本；Milvus 召回 + Rerank 精排的 LangChain 写法见 [模型统一配置说明.ipynb](<%E6%A8%A1%E5%9E%8B%E7%BB%9F%E4%B8%80%E9%85%8D%E7%BD%AE%E8%AF%B4%E6%98%8E.ipynb>)——LangChain 没有 Xinference rerank 的原生集成，需要自定义 `BaseDocumentCompressor` 包一层 `/v1/rerank`。
 
 综合实战的 Collection、运行顺序、评测指标与常见问题，见 [02_综合实战/README.md](<02_%E7%BB%BC%E5%90%88%E5%AE%9E%E6%88%98/README.md>)。
 

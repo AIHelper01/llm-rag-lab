@@ -34,8 +34,28 @@
 
 - Python 3.12
 - Jupyter Notebook 或 JupyterLab
-- vLLM/Ollama Embedding/Reranker 服务
+- 模型服务：vLLM（大模型）+ Xinference（Embedding / Reranker）
 - Milvus 3.x（客户端 `pymilvus` 3.0.x）
+
+起向量库（Docker Compose，Milvus v3.0.3）：
+
+```shell
+wget https://github.com/milvus-io/milvus/releases/download/v3.0.3/milvus-standalone-docker-compose.yaml -O docker-compose.yaml
+docker compose -f docker-compose.yaml up -d
+docker compose ps          # milvus-etcd / milvus-minio / milvus-standalone 均应为 Up (healthy)
+```
+
+可选：Attu 图形界面（Attu v3 用 `MILVUS_ADDRESS`，不再是 `MILVUS_URL`）：
+
+```shell
+docker run -d --name attu \
+  -p 9092:3000 \
+  -e MILVUS_ADDRESS=host.docker.internal:19530 \
+  -v attu-data:/data \
+  zilliz/attu:v3.0.0
+```
+
+浏览器打开 `http://localhost:9092`；端口以启动参数为准，`docker port attu` 可确认。Linux 上还需加 `--add-host=host.docker.internal:host-gateway`。
 
 推荐 Python 3.12，**默认用 uv**（在仓库根执行，中英两侧共用同一个 `.venv`）：
 
