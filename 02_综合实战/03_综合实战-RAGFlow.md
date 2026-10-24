@@ -284,7 +284,7 @@ ShiYan@12345
 
 
 
-![image-20251121155100750](../assets/ragflow1.png)
+![image-20251121155100750](../assets/ragflow-01.png)
 
 
 
@@ -348,7 +348,7 @@ docker compose -p docker_ragflow down
 
 
 
-![image-20251121160528051](../assets/ragflow2.png)
+![image-20251121160528051](../assets/ragflow-02.png)
 
 | 模型类型      | 英文全称 / 解释                                | 主要功能与作用简介                                           |
 | ------------- | ---------------------------------------------- | ------------------------------------------------------------ |
@@ -375,25 +375,25 @@ docker compose -p docker_ragflow down
 
 按以下步骤进行操作
 
-![image-20251121163051011](../assets/ragflow6.png)
+![image-20251121163051011](../assets/ragflow-06.png)
 
 
 
-![image-20251121163524365](../assets/ragflow7.png)
+![image-20251121163524365](../assets/ragflow-07.png)
 
 
 
-![image-20251121163749210](../assets/ragflow8.png)
+![image-20251121163749210](../assets/ragflow-08.png)
 
 
 
-![image-20251121163842565](../assets/ragflow9.png)
+![image-20251121163842565](../assets/ragflow-09.png)
 
 
 
 
 
-![image-20251121163908661](../assets/ragflow10.png)
+![image-20251121163908661](../assets/ragflow-10.png)
 
 
 
@@ -411,11 +411,11 @@ docker compose -p docker_ragflow down
 
 
 
-![image-20251121164438201](../assets/ragflow11.png)
+![image-20251121164438201](../assets/ragflow-11.png)
 
 
 
-![image-20251121164607981](../assets/ragflow12.png)
+![image-20251121164607981](../assets/ragflow-12.png)
 
 
 
@@ -436,7 +436,7 @@ model: dengcao/Qwen3-Reranker-0.6B:F16
 
 |        |          | LLM                        | Embedding                        | Reranker                        |
 | ------ | -------- | -------------------------- | -------------------------------- | ------------------------------- |
-| Ollama | base_url | http://localhost:11434/v1/ | http://192.168.1.166:11434      | http://localhost:11434          |
+| Ollama | base_url | http://localhost:11434/v1/ | http://<你的Ollama主机IP>:11434      | http://localhost:11434          |
 |        | api_key  | NA                         | NA                               | NA                              |
 |        | model    | qwen3:8B                   | qwen3-embedding:0.6b             | dengcao/Qwen3-Reranker-0.6B:Q8_0 |
 
@@ -460,15 +460,15 @@ model: dengcao/Qwen3-Reranker-0.6B:F16
 
 按以下步骤进行操作
 
-![image-20251121160932814](../assets/ragflow3.png)
+![image-20251121160932814](../assets/ragflow-03.png)
 
 
 
-![image-20251121160957364](../assets/ragflow4.png)
+![image-20251121160957364](../assets/ragflow-04.png)
 
 
 
-![image-20251121161102429](../assets/ragflow5.png)
+![image-20251121161102429](../assets/ragflow-05.png)
 
 
 
@@ -478,7 +478,7 @@ model: dengcao/Qwen3-Reranker-0.6B:F16
 
 
 
-![image-20251121165147984](../assets/ragflow13.png)
+![image-20251121165147984](../assets/ragflow-13.png)
 
 
 
@@ -490,29 +490,29 @@ model: dengcao/Qwen3-Reranker-0.6B:F16
 
 
 
-![image-20251121165230758](../assets/ragflow14.png)
+![image-20251121165230758](../assets/ragflow-14.png)
 
 
 
-![image-20251121165303207](../assets/ragflow15.png)
+![image-20251121165303207](../assets/ragflow-15.png)
 
 
 
-![image-20251121165339460](../assets/ragflow16.png)
+![image-20251121165339460](../assets/ragflow-16.png)
 
 
 
-![image-20251121165513908](../assets/ragflow17.png)
+![image-20251121165513908](../assets/ragflow-17.png)
 
 
 
 
 
-![image-20251121165529440](../assets/ragflow18.png)
+![image-20251121165529440](../assets/ragflow-18.png)
 
 
 
-![image-20251121165659526](../assets/ragflow19.png)
+![image-20251121165659526](../assets/ragflow-19.png)
 
 使用知识图谱-GraphRAG
 
@@ -528,11 +528,11 @@ RAGFlow提供了两种不同的方法来处理您数据集中的文档，以优�
 | **知识图谱** | 从文档中提取出实体（如人物、地点、组织）和实体之间的关系，构建一个语义网络。 | 系统扫描所有文档，识别出关键概念（实体），并判断它们之间如何相互关联（关系），最终形成一个可视化的“知识地图”。 | **优势**：检索时不仅能找到包含关键词的文档，更能通过关系进行智能推理和关联查询。 **适用场景**：分析包含大量事实、事件和对象的文档（如研究报告、公司财报、新闻档案），非常适合探索“实体A和实体B有什么关系？”这类问题。 |
 | **RAPTOR**   | 对文档进行递归式的聚类和摘要，构建一个分层的树状结构。       | 1. **分割**：先将长文档切分成小块。 2. **聚类与摘要**：将语义相似的小块聚在一起，并生成一个概括这些小块的摘要。 3. **递归**：将这些摘要再视为新的“文档”，重复聚类和摘要的过程，从而形成一个从细节到主题的多层次结构。 | **优势**：能从不同粒度（从具体细节到核心主题）把握文档整体脉络，避免检索时丢失上下文，尤其擅长处理冗长复杂的文档。 **适用场景**：处理书籍、长报告、学术论文等，当您需要理解文档的宏观主旨而不丢失关键细节时非常有效。 |
 
-![image-20251121165806430](../assets/ragflow20.png)
+![image-20251121165806430](../assets/ragflow-20.png)
 
 
 
-![image-20251121170337314](../assets/ragflow21.png)
+![image-20251121170337314](../assets/ragflow-21.png)
 
 
 
@@ -542,11 +542,11 @@ RAGFlow提供了两种不同的方法来处理您数据集中的文档，以优�
 
 
 
-![image-20251121170439755](../assets/ragflow22.png)
+![image-20251121170439755](../assets/ragflow-22.png)
 
 
 
-![image-20251121171734675](../assets/ragflow23.png)
+![image-20251121171734675](../assets/ragflow-23.png)
 
 
 

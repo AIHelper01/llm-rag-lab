@@ -18,7 +18,7 @@
 
 **2026 年 4 月 3 日**，Andrej Karpathy 在 X 上发了一条长帖，标题就三个词：*LLM Knowledge Bases*。
 
-![image-20260503140456224](assets/ka1.png)
+![image-20260503140456224](assets/ka-01.png)
 
 这条帖子的数据堪称现象级——**1500 万浏览、4.8 万转发、8.8 万收藏**。两天后，他又在 GitHub Gist 上追加了一篇完整的方法论文档，评论区同样爆了。
 
@@ -46,7 +46,7 @@
 
 Karpathy 在 Gist 文档里把整个系统拆成了三层，每层职责分明：
 
-![llm_wiki_directory_structure](assets/ka2.svg)
+![llm_wiki_directory_structure](assets/ka-02.svg)
 
 ### 完整目录结构
 
@@ -164,13 +164,13 @@ Farza 之前用 RAG 做过类似的系统，他的原话是 *"it was ass"*（烂
 
 思路梳理
 
-![ChatGPT Image 2026年5月3日 21_35_51](assets/obcc.png)
+![ChatGPT Image 2026年5月3日 21_35_51](assets/obcc-01.png)
 
 
 
 
 
-![Obsidian 完整界面](assets/ka3.png)
+![Obsidian 完整界面](assets/ka-03.png)
 
 *图 1：Obsidian 的完整工作界面 - 左侧文件列表、中间编辑区、右侧图谱视图*
 
@@ -192,19 +192,19 @@ Farza 之前用 RAG 做过类似的系统，他的原话是 *"it was ass"*（烂
 3. 选择文件夹位置（建议选择云同步文件夹，如 iCloud/OneDrive）
 4. 命名你的知识库名称
 
-![image-20260503150403657](assets/ka4.png)
+![image-20260503150403657](assets/ka-04.png)
 
-![image-20260503150411581](assets/ka5.png)
+![image-20260503150411581](assets/ka-05.png)
 
 ### 推荐插件：Web Clipper（网页剪藏）
 
 在浏览器扩展商店搜索 **"Obsidian Web Clipper"** 安装，可以一键将网页文章保存为干净的 Markdown 格式到 Obsidian。
 
-![Web Clipper 使用界面](assets/ka6.png)
+![Web Clipper 使用界面](assets/ka-06.png)
 
 *图 3：Obsidian Web Clipper 浏览器扩展 - 一键保存网页到本地知识库*
 
-![Web Clipper 设置](assets/ka7.png)
+![Web Clipper 设置](assets/ka-07.png)
 
 *图 4：Web Clipper 的设置界面 - 可配置保存路径和格式*
 
@@ -309,7 +309,7 @@ setx ANTHROPIC_API_KEY "你的API Key"
 
 不需要切换工具，直接在笔记中与 Claude 对话，并且能读取笔记内容作为背景知识。
 
-![image-20260503192735177](assets/ka9.png)
+![image-20260503192735177](assets/ka-09.png)
 
 
 
@@ -339,11 +339,11 @@ From GitHub Release (recommended)
 
 **第三步**：将三个文件复制进去，刷新已安装插件列表，并开启插件。
 
-![image-20260503151621160](assets/ka10.png)
+![image-20260503151621160](assets/ka-10.png)
 
 **设置 API**：
 
-![image-20260503154415330](assets/ka11.png)
+![image-20260503154415330](assets/ka-11.png)
 
 ```
 ANTHROPIC_API_KEY=<your-kimi-key>
@@ -353,11 +353,11 @@ ANTHROPIC_MODEL=kimi-for-coding
 
 
 
-![image-20260503154456769](assets/ka12.png)
+![image-20260503154456769](assets/ka-12.png)
 
 **第四步**：在 `Settings → Community plugins` 中启用 "Claudian"，点击左下角的机器人图标，即可在侧边栏与 Claude Code 对话。
 
-![image-20260503151804804](assets/ka13.png)
+![image-20260503151804804](assets/ka-13.png)
 
 ---
 
@@ -369,7 +369,7 @@ Karpathy 的方法出奇地简单：**不依赖向量数据库，不搭建 RAG �
 
 对于个人知识库规模（约 100 篇文章、40 万词），直接让 LLM 读取它自己维护的摘要文件，效果不比向量检索差，但简单得多。
 
-![Karpathy LLM Knowledge Base 架构图](assets/ka14.png)
+![Karpathy LLM Knowledge Base 架构图](assets/ka-14.png)
 
 *图 9：Karpathy LLM Knowledge Base 完整架构图 - 来自 DAIR.AI Academy*
 
@@ -417,7 +417,7 @@ my-wiki/
     └── overview.md    # 整个 wiki 的鸟瞰摘要（可选）
 ```
 
-![image-20260503153836769](assets/ka15.png)
+![image-20260503153836769](assets/ka-15.png)
 
 ---
 
@@ -431,7 +431,7 @@ my-wiki/
 | `wiki/` | `build/`（编译产物） | LLM 自动生成和维护 |
 | `outputs/` | `logs/`（运行日志） | 运行时输出和报告 |
 
-![详细工作流程](assets/ka16.png)
+![详细工作流程](assets/ka-16.png)
 
 ---
 
@@ -707,11 +707,11 @@ templates/
 
 Obsidian 的 Graph View 可以可视化你的知识网络：
 
-![Obsidian Graph View 示例](assets/ka17.png)
+![Obsidian Graph View 示例](assets/ka-17.png)
 
 *图 ：Obsidian 的图谱视图 - 直观展示笔记之间的关联*
 
-![复杂知识图谱](assets/ka18.png)
+![复杂知识图谱](assets/ka-18.png)
 
 *图 12：更复杂的知识图谱示例 - 展示概念间的多重连接*
 

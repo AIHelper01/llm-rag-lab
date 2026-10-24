@@ -2,7 +2,7 @@
 
 中文母本 · English mirror：待翻译（进度见[课程地图](../README.md)，配对关系见 `scripts/course_map.py`）。
 
-本目录以 ZXVMAX-S 产品说明书为知识库，演示如何使用 LangChain、Ollama 和 Milvus 构建一套从文档预处理到效果评估的 RAG 系统。
+本目录以 ZXVMAX-S 产品说明书为知识库，演示如何使用 LangChain、vLLM / Xinference 模型服务和 Milvus 构建一套从文档预处理到效果评估的 RAG 系统。
 
 ## 1. 教程文件
 
@@ -99,20 +99,32 @@ uv run ipython kernel install \
 
 ## 4. 配置 API Key (示例)
 
-在仓库根目录创建 `.env`：
+在仓库根目录创建 `.env`（键名与第 5 节一致，值换成你自己的服务地址和密钥）：
 
 ```dotenv
-SILICONFLOW_API_KEY=你的_SiliconFlow_API_Key
-DEEPSEEK_API_KEY=你的_DeepSeek_API_Key
+vLLM_QWEN_BASE_URL = "http://你的vLLM地址/v1"
+vLLM_QWEN_API_KEY = "你的vLLM密钥"
+vLLM_QWEN_MODEL_ID = "my_qwen3.8_flash_next"
+
+XINFERENCE_BASE_URL = "http://你的Xinference地址"
+XINFERENCE_OPENAI_BASE_URL = "http://你的Xinference地址/v1"
+XINFERENCE_API_KEY = "你的Xinference密钥"
+XINFERENCE_EMBEDDING_MODEL_ID = "my_qwen3_embedding_0.6b"
+XINFERENCE_RERANKER_MODEL_ID = "my_qwen3_reranker_0.6b"
+
+MILVUS_URI = "http://localhost:19530"
 ```
 
-Notebook 位于 `02_综合实战` 子目录，因此配置代码使用：
+Notebook 位于 `02_综合实战` 子目录，统一用 `find_dotenv()` 向上查找仓库根的 `.env`，不要写死相对路径：
 
 ```python
-env_path = "../.env"
-load_dotenv(env_path)
+import os
+from dotenv import load_dotenv, find_dotenv
+
+_ = load_dotenv(find_dotenv())
 ```
 
+同理，Notebook 内的数据与图片一律用相对自身目录的 `../knowledge_path/...`、`../assets/...`。
 不要在 Notebook 中直接写入或输出真实 API Key。
 
 ## 5. 模型与服务
@@ -172,12 +184,12 @@ my_llm = init_chat_model(
 
 ### 进阶版
 
-1. 比较简单、优化、PDF 转 Markdown、Unstructured 四种预处理路线
+1. 比较简单、优化、PDF 转 Markdown、Unstructured 四种预处理路线（`unstructured[pdf]` 为可选依赖，未安装时该路线自动跳过）
 2. 构建 `ZXVMAXS` 与 `ZXVMAXS_HYBRID`
 3. 执行查询规范化、Metadata Filter 和检索路由
 4. 执行去重、邻接扩展和上下文预算控制
 5. 对比 Weighted、RRF 和动态权重混合检索
-6. 使用本地 Qwen3 Reranker 精排
+6. 使用 Xinference Qwen3 Reranker 精排
 7. 构建带记忆的完整混合检索问答链
 8. 测试 Agentic RAG 的单一检索、混合检索和不检索场景
 9. 分别评估检索层与生成层效果
@@ -271,5 +283,5 @@ curl -s -H "Authorization: Bearer $vLLM_QWEN_API_KEY" "$vLLM_QWEN_BASE_URL/model
 - 不要把 API Key 写进 Notebook、README 或日志；
 - 不要提交 `.env`；
 - 如果密钥曾出现在 Notebook 输出或版本记录中，应立即撤销并重新生成；
-- 生产环境应通过密钥管理服务注入凭据，并限制 Milvus、Ollama 等服务的网络访问范围。
+- 生产环境应通过密钥管理服务注入凭据，并限制 Milvus、vLLM、Xinference 等服务的网络访问范围。
 
