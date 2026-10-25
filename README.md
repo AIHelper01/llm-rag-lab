@@ -16,7 +16,7 @@ The Chinese lessons at the repository root are the **masters**; every lesson und
 | 00 Foundations - C04 Retrieval optimisation | pending | Hybrid retrieval, query construction and rewriting, text2sql | Pending |
 | 00 Foundations - C05 Generation | pending | Prompt templates and structured output | Pending |
 | 00 Foundations - C06 Evaluation | pending | Retrieval and generation metrics, evaluation tools | Pending |
-| 02 Capstone | pending | Baseline and advanced notebooks, RAGFlow platform | Pending |
+| 02 Capstone | [02-capstone/README.md](english/02-capstone/README.md) | Baseline and advanced notebooks, RAGFlow platform | Done |
 | 03 Paradigm extensions | pending | Personal AI knowledge base | Pending |
 
 Suggested order: C01 to C06, then the capstone (baseline notebook first, advanced second), and finally the paradigm extensions.
@@ -135,4 +135,4 @@ llm-rag-lab/
 
 - Never put API keys in notebooks, the README, or logs.
 - **Heads up**: `.env` was committed to this repository in the past; it is now untracked with `git rm --cached .env` and listed in `.gitignore`. Keys that entered history still need rotating. `make doctor` only reports key names, never values.
-- In production, inject credentials from a secret manager and restrict network access to Milvus, Ollama, and similar services.
+- In production, inject credentials from a secret manager and restrict network access to Milvus, vLLM, Xinference, and similar services.

@@ -16,7 +16,7 @@ Every lesson here is derived from a Chinese master lesson at the repository root
 | C04 Retrieval optimisation | pending | 5 lessons | Pending |
 | C05 Generation | pending | 1 lesson | Pending |
 | C06 Evaluation | pending | 2 lessons | Pending |
-| 02 Capstone | pending | 2 notebooks, 1 PDF-cleaning notebook, 1 RAGFlow chapter | Pending |
+| 02 Capstone | [02-capstone/README.md](02-capstone/README.md) | 2 notebooks, 1 PDF-cleaning notebook, 1 RAGFlow chapter | Done |
 | 03 Paradigm extensions | pending | 1 chapter | Pending |
 
 Full pairing table and reasons for every gap: `python3 scripts/course_map.py` (run from the repository root). Live check: `python3 scripts/check_parity.py`.

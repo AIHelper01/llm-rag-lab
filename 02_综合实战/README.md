@@ -1,6 +1,6 @@
 # LangChain RAG 综合实战
 
-中文母本 · English mirror：待翻译（进度见[课程地图](../README.md)，配对关系见 `scripts/course_map.py`）。
+中文母本 · [English mirror](../english/02-capstone/README.md)
 
 本目录以 ZXVMAX-S 产品说明书为知识库，演示如何使用 LangChain、vLLM / Xinference 模型服务和 Milvus 构建一套从文档预处理到效果评估的 RAG 系统。
 

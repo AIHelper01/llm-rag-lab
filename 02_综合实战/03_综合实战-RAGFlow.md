@@ -275,9 +275,9 @@ docker logs -f docker_ragflow-ragflow-cpu-1
 
 ```
 Email:
-admin@zte.com.cn
+you@example.com
 Password：
-ShiYan@12345
+Choose-a-strong-password
 ```
 
 
@@ -406,7 +406,7 @@ docker compose -p docker_ragflow down
 |      |          | LLM                      | Embedding                | Reranker                 |
 | ---- | -------- | ------------------------ | ------------------------ | ------------------------ |
 | vLLM | base_url | http://localhost:9992/v1 | http://localhost:8000/v1 | http://localhost:8001/v1 |
-|      | api_key  | <your-vllm-key>             | NA                       | NA                       |
+|      | api_key  | <your-vllm-token>        | NA                       | NA                       |
 |      | model    | my_qwen3_14b             | Qwen3-Embedding-0.6B     | Qwen3-Reranker-0.6B      |
 
 
@@ -455,7 +455,7 @@ model: dengcao/Qwen3-Reranker-0.6B:F16
 |             |          | LLM                                                         | Embedding                                                   | Reranker                                                    |
 | ----------- | -------- | ----------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------- |
 | siliconflow | base_url | https://api.siliconflow.cn/v1/chat/completions              | https://api.siliconflow.cn/v1/embeddings                    | https://api.siliconflow.cn/v1/rerank                        |
-|             | api_key  | Bearer <your-ragflow-demo-key>- | Bearer <your-ragflow-demo-key>- | Bearer <your-ragflow-demo-key>- |
+|             | api_key  | Bearer <your-siliconflow-key> | Bearer <your-siliconflow-key> | Bearer <your-siliconflow-key> |
 |             | model    | Qwen/Qwen3-8B                                               | BAAI/bge-m3                                                 | BAAI/bge-reranker-v2-m3                                     |
 
 按以下步骤进行操作

@@ -16,7 +16,7 @@
 | 00 夯实基础 · C04 检索优化 | [01_混合检索.md](<00_%E5%A4%AF%E5%AE%9E%E5%9F%BA%E7%A1%80/C04_%E6%A3%80%E7%B4%A2%E4%BC%98%E5%8C%96/01_%E6%B7%B7%E5%90%88%E6%A3%80%E7%B4%A2.md>) | 混合检索、查询构建与重构、text2sql | 待翻译 |
 | 00 夯实基础 · C05 生成集成 | [01_格式化生成.md](<00_%E5%A4%AF%E5%AE%9E%E5%9F%BA%E7%A1%80/C05_%E7%94%9F%E6%88%90%E9%9B%86%E6%88%90/01_%E6%A0%BC%E5%BC%8F%E5%8C%96%E7%94%9F%E6%88%90.md>) | Prompt 模板与结构化输出 | 待翻译 |
 | 00 夯实基础 · C06 RAG 系统评估 | [01_评估介绍.md](<00_%E5%A4%AF%E5%AE%9E%E5%9F%BA%E7%A1%80/C06_RAG%E7%B3%BB%E7%BB%9F%E8%AF%84%E4%BC%B0/01_%E8%AF%84%E4%BC%B0%E4%BB%8B%E7%BB%8D.md>) | 检索层与生成层评估、评估工具 | 待翻译 |
-| 02 综合实战 | [README.md](<02_%E7%BB%BC%E5%90%88%E5%AE%9E%E6%88%98/README.md>) | 基础版 / 进阶版 Notebook、RAGFlow 平台化 | 待翻译 |
+| 02 综合实战 | [README.md](<02_%E7%BB%BC%E5%90%88%E5%AE%9E%E6%88%98/README.md>) | 基础版 / 进阶版 Notebook、RAGFlow 平台化 | [02-capstone/README.md](english/02-capstone/README.md) |
 | 03 范式拓展 | [01_Karpathy式AI知识库搭建指南.md](<03_%E8%8C%83%E5%BC%8F%E6%8B%93%E5%B1%95/01_Karpathy%E5%BC%8FAI%E7%9F%A5%E8%AF%86%E5%BA%93%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97.md>) | 个人 AI 知识库范式 | 待翻译 |
 
 学习顺序建议：C01 → C06 逐章打基础，再进 `02_综合实战`（先基础版、后进阶版），最后看 `03_范式拓展`。
@@ -145,4 +145,4 @@ llm-rag-lab/
 
 - 不要把 API Key 写进 Notebook、README 或日志；提交前检查 `.env` 未被加入差异。
 - **注意**：`.env` 历史上曾被提交进版本库，现已 `git rm --cached` 停止跟踪并写进 `.gitignore`。曾入库的密钥仍需轮换；`make doctor` 只报告键名，绝不打印值。
-- 生产环境通过密钥管理服务注入凭据，并限制 Milvus、Ollama 等服务的网络访问范围。
+- 生产环境通过密钥管理服务注入凭据，并限制 Milvus、vLLM、Xinference 等服务的网络访问范围。

@@ -89,15 +89,6 @@ PENDING_REASONS = {
     "00_夯实基础/C05_生成集成/01_格式化生成.md": "Translation queue: modules C02-C06 translate in course order",
     "00_夯实基础/C06_RAG系统评估/01_评估介绍.md": "Translation queue: modules C02-C06 translate in course order",
     "00_夯实基础/C06_RAG系统评估/02_评估工具.md": "Translation queue: modules C02-C06 translate in course order",
-    "02_综合实战/README.md":
-        "Capstone README translated together with the capstone notebooks so terminology stays consistent",
-    "02_综合实战/01_综合实战-LangChain-基础版.ipynb":
-        "Capstone notebooks need a live Milvus + embedding stack to regenerate English outputs",
-    "02_综合实战/02_综合实战-LangChain-进阶版.ipynb":
-        "Capstone notebooks need a live Milvus + embedding stack to regenerate English outputs",
-    "02_综合实战/PDF数据清洗脚本示例.ipynb":
-        "Capstone notebooks need a live Milvus + embedding stack to regenerate English outputs",
-    "02_综合实战/03_综合实战-RAGFlow.md": "Translation queue: platform chapter follows the notebooks",
     "03_范式拓展/01_Karpathy式AI知识库搭建指南.md": "Translation queue: extension chapter comes after the core course",
     "模型统一配置说明.ipynb": "Translation queue: English outputs need the same vLLM + Xinference stack, translates with the capstone",
 }
