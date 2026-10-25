@@ -1,25 +1,18 @@
 import os
 # os.environ['HF_ENDPOINT']='https://hf-mirror.com'
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings 
 from llama_index.llms.openai_like import OpenAILike
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
-load_dotenv()
+_ = load_dotenv(find_dotenv())
 
-# 使用 AIHubmix
 Settings.llm = OpenAILike(
-    model="glm-4.7-flash-free",
-    api_key=os.getenv("DEEPSEEK_API_KEY"),
-    api_base="https://aihubmix.com/v1",
+    model=os.environ["vLLM_QWEN_MODEL_ID"],
+    api_key=os.environ["vLLM_QWEN_API_KEY"],
+    api_base=os.environ["vLLM_QWEN_BASE_URL"],
     is_chat_model=True
 )
-
-# Settings.llm = OpenAI(
-#     model="deepseek-chat",
-#     api_key=os.getenv("DEEPSEEK_API_KEY"),
-#     api_base="https://api.deepseek.com"
-# )
 Settings.embed_model = HuggingFaceEmbedding("BAAI/bge-small-zh-v1.5")
 
 docs = SimpleDirectoryReader(input_files=["../../data/C1/markdown/easy-rl-chapter1.md"]).load_data()

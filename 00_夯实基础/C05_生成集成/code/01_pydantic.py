@@ -3,12 +3,18 @@ import os
 from langchain_core.prompts import PromptTemplate
 from pydantic import BaseModel, Field
 from langchain_core.output_parsers import PydanticOutputParser
-from langchain_deepseek import ChatDeepSeek
+from langchain_openai import ChatOpenAI
+
+from dotenv import load_dotenv, find_dotenv
+
+# 统一从仓库根目录 .env 读取 vLLM / Xinference 配置
+_ = load_dotenv(find_dotenv())
 
 # 初始化 LLM
-llm = ChatDeepSeek(
-    model="deepseek-chat",
-    api_key=os.getenv("DEEPSEEK_API_KEY")
+ChatOpenAI(
+    model=os.environ["vLLM_QWEN_MODEL_ID"],
+    base_url=os.environ["vLLM_QWEN_BASE_URL"],
+    api_key=os.environ["vLLM_QWEN_API_KEY"],
 )
 
 # 1. 定义数据结构

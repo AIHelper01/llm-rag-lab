@@ -7,15 +7,20 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'text2sql'))
 
 from text2sql.text2sql_agent import SimpleText2SQLAgent
 
+from dotenv import load_dotenv, find_dotenv
+
+# 统一从仓库根目录 .env 读取 vLLM / Xinference 配置
+_ = load_dotenv(find_dotenv())
+
 
 def setup_demo():
     """设置演示环境"""
     print("=== Text2SQL框架演示 ===\n")
     
     # 检查API密钥
-    api_key = os.getenv("DEEPSEEK_API_KEY")
+    api_key = os.getenv("vLLM_QWEN_API_KEY")
     if not api_key:
-        print("先设置DEEPSEEK_API_KEY环境变量")
+        print("请先在仓库根目录 .env 中配置 vLLM_QWEN_API_KEY")
         return None
     
     # 创建演示数据库

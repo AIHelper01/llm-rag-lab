@@ -1,7 +1,7 @@
 import os
 # hugging face镜像设置，如果国内环境无法使用启用该设置
 # os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from langchain_community.document_loaders import UnstructuredMarkdownLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -9,7 +9,7 @@ from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
-load_dotenv()
+_ = load_dotenv(find_dotenv())
 
 markdown_path = "../../data/C1/markdown/easy-rl-chapter1.md"
 
@@ -47,22 +47,13 @@ prompt = ChatPromptTemplate.from_template("""请根据下面提供的上下文�
 
 # 配置大语言模型
 
-# 使用 AIHubmix
 llm = ChatOpenAI(
-    model="glm-4.7-flash-free",
+    model=os.environ["vLLM_QWEN_MODEL_ID"],
+    base_url=os.environ["vLLM_QWEN_BASE_URL"],
+    api_key=os.environ["vLLM_QWEN_API_KEY"],
     temperature=0.7,
-    max_tokens=4096,
-    api_key=os.getenv("DEEPSEEK_API_KEY"),
-    base_url="https://aihubmix.com/v1"
+    max_tokens=4096
 )
-
-# llm = ChatOpenAI(
-#     model="deepseek-chat",
-#     temperature=0.7,
-#     max_tokens=4096,
-#     api_key=os.getenv("DEEPSEEK_API_KEY"),
-#     base_url="https://api.deepseek.com"
-# )
 
 # 用户查询
 question = "文中举了哪些例子？"

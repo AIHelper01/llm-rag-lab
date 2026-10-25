@@ -1,17 +1,23 @@
 import os
 from typing import List, Dict, Any
-from langchain_deepseek import ChatDeepSeek
+from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage
+
+from dotenv import load_dotenv, find_dotenv
+
+# 统一从仓库根目录 .env 读取 vLLM / Xinference 配置
+_ = load_dotenv(find_dotenv())
 
 
 class SimpleSQLGenerator:
     """简化的SQL生成器"""
     
-    def __init__(self, api_key: str = None):
-        self.llm = ChatDeepSeek(
-            model="deepseek-chat",
+    def __init__(self, api_key: str = None):  # 保留形参兼容旧调用，密钥统一来自 .env
+        self.llm = ChatOpenAI(
+            model=os.environ["vLLM_QWEN_MODEL_ID"],
+            base_url=os.environ["vLLM_QWEN_BASE_URL"],
+            api_key=os.environ["vLLM_QWEN_API_KEY"],
             temperature=0,
-            api_key=api_key or os.getenv("DEEPSEEK_API_KEY")
         )
     
     def generate_sql(self, user_query: str, knowledge_results: List[Dict[str, Any]]) -> str:

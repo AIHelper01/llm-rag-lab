@@ -26,7 +26,7 @@
 
 ## 三、实现一个简单的Text2SQL框架
 
-本节基于RAGFlow方案实现了一个简单的Text2SQL框架。该框架使用Milvus向量数据库作为知识库，BGE-M3模型进行语义检索，DeepSeek作为大语言模型，专门针对SQLite数据库进行了优化。
+本节基于RAGFlow方案实现了一个简单的Text2SQL框架。该框架使用Milvus向量数据库作为知识库，BGE-M3模型进行语义检索，vLLM 部署的 Qwen3 作为大语言模型，专门针对SQLite数据库进行了优化。
 
 ![Text2SQL框架工作流程](./images/4_3_2.webp)
 
@@ -106,11 +106,12 @@ SQL生成模块负责将自然语言问题转换为SQL查询语句，并具备�
 class SimpleSQLGenerator:
     """简化的SQL生成器"""
     
-    def __init__(self, api_key: str = None):
-        self.llm = ChatDeepSeek(
-            model="deepseek-chat",
+    def __init__(self, api_key: str = None):  # 保留形参兼容旧调用，密钥统一来自 .env
+        self.llm = ChatOpenAI(
+            model=os.environ["vLLM_QWEN_MODEL_ID"],
+            base_url=os.environ["vLLM_QWEN_BASE_URL"],
+            api_key=os.environ["vLLM_QWEN_API_KEY"],
             temperature=0,  # 确保结果的确定性
-            api_key=api_key or os.getenv("DEEPSEEK_API_KEY")
         )
 ```
 
@@ -330,7 +331,7 @@ def _execute_sql(self, sql: str) -> Tuple[bool, Any]:
 - 参考SQL：`SELECT * FROM users WHERE age > 25`
 
 **SQL生成过程**：
-1. DeepSeek分析用户问题的意图：查询满足年龄条件的用户
+1. 大模型分析用户问题的意图：查询满足年龄条件的用户
 2. 识别关键信息：年龄字段（age）、比较操作（大于）、阈值（**30**）
 3. 参考示例模式：从`WHERE age > 25`学习到`WHERE age > 数值`的模式
 4. 模式应用：将用户的实际数值30替换示例中的25

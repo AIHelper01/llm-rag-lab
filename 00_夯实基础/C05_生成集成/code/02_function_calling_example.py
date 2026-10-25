@@ -1,16 +1,21 @@
 from openai import OpenAI
 import os
 
+from dotenv import load_dotenv, find_dotenv
+
+# 统一从仓库根目录 .env 读取 vLLM / Xinference 配置
+_ = load_dotenv(find_dotenv())
+
 # 初始化 OpenAI 客户端
 client = OpenAI(
-    api_key=os.getenv("DEEPSEEK_API_KEY"),
-    base_url="https://api.deepseek.com",
+    api_key=os.environ["vLLM_QWEN_API_KEY"],
+    base_url=os.environ["vLLM_QWEN_BASE_URL"],
 )
 
 # 定义一个函数，用于发送消息并获取模型的响应
 def send_messages(messages, tools=None):
     response = client.chat.completions.create(
-        model="deepseek-chat",
+        model=os.environ["vLLM_QWEN_MODEL_ID"],
         messages=messages,
         tools=tools,
         tool_choice="auto",  # 让模型自主决定是否调用工具

@@ -64,8 +64,8 @@ response_metadata={
         'prompt_cache_hit_tokens': 5568,
         'prompt_cache_miss_tokens': 8
     },
-    'model_name': 'deepseek-chat',
-    'system_fingerprint': 'fp_8802369eaa_prod0425fp8',
+    'model_name': 'my_qwen3.8_flash_next',
+    'system_fingerprint': None,
     'id': '67a0580d-78b1-44d6-bccf-f654ae0e9bba',
     'service_tier': None,
     'finish_reason': 'stop',
@@ -88,7 +88,7 @@ usage_metadata={
 - **`additional_kwargs`**: 包含一些额外的参数，在这个例子中是 `{'refusal': None}`，表示模型没有拒绝回答。
 - **`response_metadata`**: 包含了关于LLM响应的元数据。
     - `token_usage`: 显示了本次调用消耗的token数量，包括完成（completion_tokens）、提示（prompt_tokens）和总量（total_tokens）。
-    - `model_name`: 使用的LLM模型名称，当前是 `deepseek-chat`。
+    - `model_name`: 使用的LLM模型名称，当前是 `my_qwen3.8_flash_next`（由 vLLM 部署，取自 `.env` 的 `vLLM_QWEN_MODEL_ID`）。
     - `system_fingerprint`, `id`, `service_tier`, `finish_reason`, `logprobs`: 这些是更详细的API响应信息，例如 `finish_reason: 'stop'` 表示模型正常完成了生成。
 - **`id`**: 本次运行的唯一标识符。
 - **`usage_metadata`**: 与 `response_metadata` 中的 `token_usage` 类似，提供了输入和输出token的统计。
@@ -106,16 +106,16 @@ usage_metadata={
 ```python
 import os
 # os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_core.vectorstores import InMemoryVectorStore
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_deepseek import ChatOpenAI
+from langchain_openai import ChatOpenAI
 
-# 加载环境变量
-load_dotenv()
+# 加载环境变量（自动向上查找仓库根目录 .env）
+_ = load_dotenv(find_dotenv())
 ```
 
 ### 3.2 数据准备
@@ -190,17 +190,17 @@ load_dotenv()
     回答:"""
                                               )
     ```
-- **配置大语言模型**: 初始化 `ChatOpenAI` 客户端，配置所用模型（`glm-4.7-flash-free`）、生成答案的温度参数（`temperature=0.7`）、最大Token数 (`max_tokens=2048`) 以及API密钥（从环境变量加载）和 url。
+- **配置大语言模型**: 初始化 `ChatOpenAI` 客户端，指向仓库根目录 `.env` 中配置的 vLLM 服务（OpenAI 兼容接口），并设置生成答案的温度参数（`temperature=0.7`）与最大 Token 数 (`max_tokens=2048`)。
     ```python
     llm = ChatOpenAI(
-        model="glm-4.7-flash-free",
+        model=os.environ["vLLM_QWEN_MODEL_ID"],
+        base_url=os.environ["vLLM_QWEN_BASE_URL"],
+        api_key=os.environ["vLLM_QWEN_API_KEY"],
         temperature=0.7,
-        max_tokens=2048,
-        api_key=os.getenv("DEEPSEEK_API_KEY")
-        base_url="https://aihubmix.com/v1"
+        max_tokens=2048
     )
     ```
-- **调用LLM生成答案并输出**: 将用户问题 (`question`) 和先前准备好的上下文 (`docs_content`) 格式化到提示模板中，然后调用ChatDeepSeek的`invoke`方法获取生成的答案。
+- **调用LLM生成答案并输出**: 将用户问题 (`question`) 和先前准备好的上下文 (`docs_content`) 格式化到提示模板中，然后调用`ChatOpenAI`的`invoke`方法获取生成的答案。
     ```python
     answer = llm.invoke(prompt.format(question=question, context=docs_content))
     print(answer)
@@ -217,17 +217,17 @@ load_dotenv()
 ```python
 import os
 # os.environ['HF_ENDPOINT']='https://hf-mirror.com'
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings 
 from llama_index.llms.openai_like import OpenAILike
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
-load_dotenv()
+_ = load_dotenv(find_dotenv())
 
 Settings.llm = OpenAILike(
-    model="glm-4.7-flash-free",
-    api_key=os.getenv("DEEPSEEK_API_KEY"),
-    api_base="https://aihubmix.com/v1",
+    model=os.environ["vLLM_QWEN_MODEL_ID"],
+    api_key=os.environ["vLLM_QWEN_API_KEY"],
+    api_base=os.environ["vLLM_QWEN_BASE_URL"],
     is_chat_model=True
 )
 Settings.embed_model = HuggingFaceEmbedding("BAAI/bge-small-zh-v1.5")

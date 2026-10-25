@@ -4,6 +4,10 @@
 
 ## 一、大模型 API 配置
 
+> 本课程统一读取**仓库根目录的 `.env`** 文件（变量名 `vLLM_QWEN_API_KEY`），代码里用
+> `load_dotenv(find_dotenv())` 自动向上查找，因此把密钥写进 `.env` 即可运行全部课件。
+> 下面导出到 shell 环境变量的做法只是可选兜底，完整字段见根目录 `模型统一配置说明.ipynb`。
+
 ### 1.1 AIHubmix API 申请
 
 AIHubmix 是一个美国平台，公司注册在美国的特拉华州，一站式聚合了全球主流的 AI 模型，最新的模型通常能在发布当天最晚不超过 1 周就会支持。完全对接相关模型的云厂商（OpenAI 对接的是 Azure 云，Gemini 对接的 Google 官方，Claude 对接的是 AWS，其他开源等模型是对接到各大知名云厂商或者推理公司）。AIHubmix 的服务器是在美国谷歌云上采用集群部署，同时因为完全对接云厂商，所以稳定性非常好，有多端点路由机制，可以达到比直连官方更稳定的效果。
@@ -33,6 +37,10 @@ AIHubmix 是一个美国平台，公司注册在美国的特拉华州，一站�
     ![密钥管理](./images/3.png)
 
 ### 1.2 DeepSeek API 申请
+
+> 可选：本课程默认使用自建 vLLM 服务，无需申请第三方密钥。若你希望改用自己的 DeepSeek
+> 账号，可按下面步骤取得密钥，然后填入仓库根目录 `.env` 的 `vLLM_QWEN_API_KEY`
+> 并把 `vLLM_QWEN_BASE_URL`、`vLLM_QWEN_MODEL_ID` 换成 DeepSeek 对应取值。
 
 要使用 Deepseek 提供的大语言模型服务，你首先需要一个 API Key。下面是申请步骤：
 
@@ -139,10 +147,10 @@ GitHub Codespaces 是 GitHub 提供的一项服务，允许开发者在云端创
 2.  输入 `i` 进入编辑模式，在文件末尾添加以下行，将 `[你的大模型 API 密钥]` 替换为你自己的密钥：
 
     ```bash
-    export DEEPSEEK_API_KEY=[你的大模型 API 密钥]
+    export vLLM_QWEN_API_KEY=[你的大模型 API 密钥]
     ```
 
-    如果选择的是 `AIHubmix` 平台，为了增加辨识度也可以使用：
+    如果使用 `AIHubmix` 等第三方聚合平台，为了增加辨识度也可以使用：
 
     ```bash
     export AIHUBMIX_API_KEY=[你的大模型 API 密钥]
@@ -263,10 +271,10 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
 2.  输入 `i` 进入编辑模式，在文件末尾添加以下行，将 `[你的大模型 API 密钥]` 替换为你自己的密钥：
 
     ```bash
-    export DEEPSEEK_API_KEY=[你的大模型 API 密钥]
+    export vLLM_QWEN_API_KEY=[你的大模型 API 密钥]
     ```
 
-    如果选择的是 `AIHubmix` 平台，为了增加辨识度也可以使用：
+    如果使用 `AIHubmix` 等第三方聚合平台，为了增加辨识度也可以使用：
 
     ```bash
     export AIHUBMIX_API_KEY=[你的大模型 API 密钥]
@@ -329,8 +337,8 @@ Cloud Studio 是腾讯云推出的一款基于浏览器的集成开发环境（I
     ![高级系统设置](./images/1_2_13.webp)
 
 4.  在 “环境变量” 对话框中，点击 “新建”（在 “用户变量” 部分下），然后输入以下信息：
-    - 变量名：DEEPSEEK_API_KEY
-    - 变量值：[你的 Deepseek API 密钥]
+    - 变量名：vLLM_QWEN_API_KEY
+    - 变量值：[你的大模型 API 密钥]
 
     ![高级系统设置](./images/1_2_14.webp)
 

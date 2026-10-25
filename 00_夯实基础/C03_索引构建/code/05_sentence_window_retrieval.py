@@ -1,12 +1,23 @@
 import os
 from llama_index.core.node_parser import SentenceWindowNodeParser, SentenceSplitter
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, Settings
-from llama_index.llms.deepseek import DeepSeek
+from llama_index.llms.openai_like import OpenAILike
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core.postprocessor import MetadataReplacementPostProcessor
 
+from dotenv import load_dotenv, find_dotenv
+
+# 统一从仓库根目录 .env 读取 vLLM / Xinference 配置
+_ = load_dotenv(find_dotenv())
+
 # 1. 配置模型
-Settings.llm = DeepSeek(model="deepseek-chat", temperature=0.1, api_key=os.getenv("DEEPSEEK_API_KEY"))
+Settings.llm = OpenAILike(
+    model=os.environ["vLLM_QWEN_MODEL_ID"],
+    api_key=os.environ["vLLM_QWEN_API_KEY"],
+    api_base=os.environ["vLLM_QWEN_BASE_URL"],
+    is_chat_model=True,
+    temperature=0.1,
+)
 Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en")
 
 # 2. 加载文档

@@ -1,11 +1,16 @@
 import os
-from langchain_deepseek import ChatDeepSeek 
+from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import BiliBiliLoader
 from langchain.chains.query_constructor.base import AttributeInfo
 from langchain.retrievers.self_query.base import SelfQueryRetriever
 from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 import logging
+
+from dotenv import load_dotenv, find_dotenv
+
+# 统一从仓库根目录 .env 读取 vLLM / Xinference 配置
+_ = load_dotenv(find_dotenv())
 
 logging.basicConfig(level=logging.INFO)
 
@@ -72,11 +77,12 @@ metadata_field_info = [
 ]
 
 # 4. 创建自查询检索器
-llm = ChatDeepSeek(
-    model="deepseek-chat", 
-    temperature=0, 
-    api_key=os.getenv("DEEPSEEK_API_KEY")
-    )
+ChatOpenAI(
+    model=os.environ["vLLM_QWEN_MODEL_ID"],
+    base_url=os.environ["vLLM_QWEN_BASE_URL"],
+    api_key=os.environ["vLLM_QWEN_API_KEY"],
+    temperature=0,
+)
 
 retriever = SelfQueryRetriever.from_llm(
     llm=llm,

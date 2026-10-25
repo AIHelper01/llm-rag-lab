@@ -21,7 +21,7 @@ So how does a RAG system actually combine parametric and non-parametric knowledg
 
 (2) **Generation stage: merging the two kinds of knowledge**
 -   **Context assembly**: the **generation module** receives the retrieved chunks together with the user's original question.
--   **Instruction-guided generation**: following a prepared **prompt**, it combines context and question, then steers the LLM (DeepSeek, for instance) into controlled, evidence-backed generation.
+-   **Instruction-guided generation**: following a prepared **prompt**, it combines context and question, then steers the LLM (Qwen3, for instance) into controlled, evidence-backed generation.
 
 <div align="center">
    <img src="../../../00_%E5%A4%AF%E5%AE%9E%E5%9F%BA%E7%A1%80/C01_%E8%A7%A3%E9%94%81RAG/images/1_1_1.svg" width="60%" alt="Two-stage RAG architecture" />

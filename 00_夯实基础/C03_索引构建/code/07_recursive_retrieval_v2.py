@@ -1,17 +1,22 @@
 import os
 import pandas as pd
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 from llama_index.core import VectorStoreIndex, Document, Settings
 from llama_index.core.retrievers import VectorIndexRetriever
 from llama_index.core.query_engine import RetrieverQueryEngine
 from llama_index.core.vector_stores import MetadataFilters, ExactMatchFilter
-from llama_index.llms.deepseek import DeepSeek
+from llama_index.llms.openai_like import OpenAILike
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
-load_dotenv()
+_ = load_dotenv(find_dotenv())
 
 # 配置模型
-Settings.llm = DeepSeek(model="deepseek-chat", api_key=os.getenv("DEEPSEEK_API_KEY"))
+Settings.llm = OpenAILike(
+    model=os.environ["vLLM_QWEN_MODEL_ID"],
+    api_key=os.environ["vLLM_QWEN_API_KEY"],
+    api_base=os.environ["vLLM_QWEN_BASE_URL"],
+    is_chat_model=True,
+)
 Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-zh-v1.5")
 
 # 1. 加载和预处理数据
