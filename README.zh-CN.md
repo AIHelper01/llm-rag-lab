@@ -67,11 +67,35 @@ Windows PowerShell：
 ```bash
 make sync     # uv sync
 make lab      # uv run jupyter lab
+make run      # 用 env_rag_uv 内核真实执行课件，输出写回 notebook
+make outputs  # 把实跑输出内嵌成「预期输出」块
 make check    # 中英对齐与英文侧语言检查
 make doctor   # 环境体检：uv、Python、.env、依赖导入
 ```
 
 `requirement.txt` 是历史 Conda 路线的遗留清单，保留仅供对照，新环境一律走 `uv sync`。
+
+### 2.1 课件里的「预期输出」
+
+中文母本的每个有输出的代码单元后面都跟着一个 `**预期输出：**` 块：文字输出逐字摘录（超过 3000 字符按字符截断并在块内标注），机器相关的绝对路径折叠成 `…`，图片输出导出到 `assets/` 并以相对路径引用。这些内容**全部来自真实执行**，不允许手写编造；因此执行 **Kernel → Clear All Outputs** 之后，这次实跑的结果依然看得见。
+
+入库的母本**不保留单元格原生 outputs**（里面全是 venv、ipykernel 临时目录这类机器路径），想复现原始输出请在本地 `make run`。没有实跑输出时 `scripts/embed_expected_outputs.py` 会直接跳过，不会把已有的「预期输出」块清空。
+
+刷新方式（都在仓库根执行，先跑后嵌）：
+
+```bash
+make run        # = ~/env_rag_uv/.venv/bin/python scripts/execute_notebooks.py
+make outputs    # = ~/env_rag_uv/.venv/bin/python scripts/embed_expected_outputs.py
+```
+
+- 需要 Milvus（`localhost:19530`）、vLLM、Xinference 三个服务在线；`02_综合实战` 的两个 Notebook 会 `drop_old=True` 重建 `ZXVMAXS` / `ZXVMAXS_HYBRID` 集合。全量四篇约 12 分钟（2026-10-25 实跑：模型统一配置 11.7 秒、PDF 清洗示例 36.8 秒、基础版 277.7 秒、进阶版 381.1 秒，进阶版的 Agentic RAG 与 LLM-as-Judge 走远程推理，占大头）。
+- 内嵌出来的 markdown 单元带 `course-expected-output` 标签，脚本可重复执行（先删后建，内容不变则单元 id 不变）。
+- **英文镜像不内嵌**：输出内容本身就是中文语料，进 `english/` 会破坏「镜像无中日韩文字」的硬规则；镜像只保留「在真实环境执行后查看输出」的提示，`scripts/check_parity.py` 在比对单元格数量时会跳过带该标签的母本单元。
+- LLM 生成的文本每次运行都会变（检索命中的页码同理），块里的摘录是**某一次真实运行**的样本，用于对照结构与量级，不是逐字可复现的断言。
+- `02_综合实战/PDF数据清洗脚本示例.ipynb` 只往 `tmp/pdf-cleaning-demo/VMAX-S` 写（已在 `.gitignore`）。`knowledge_md/` 是两篇综合实战课件读取的语料，被示例覆盖会静默改变检索结果和实跑输出；刷新实跑输出前先确认 `git status --short knowledge_md` 是干净的。
+- `knowledge_md/` 由进阶版课件的 Markdown 预处理章节生成，重跑后 `git status --short knowledge_md` 应当仍为空——不为空说明这次改动会影响后续所有检索结果，先确认再提交。
+- Unstructured 即使 `strategy="fast"` 也要用 spaCy 分句：`preshed==3.0.14` 会让 `spacy.load()` 抛 `OverflowError`，而 Unstructured 把这个异常吞了，症状是 Element 数量全部为 `0`；`pdf` extra 已钉住 `preshed<3.0.14`。
+- `02_综合实战/PDF数据清洗脚本示例.ipynb` 的 Unstructured 路线需要重型解析栈：`cd ~/env_rag_uv && uv sync --extra pdf`（会拉 torch / timm / transformers / opencv）。未安装时该单元如实报 `ModuleNotFoundError`，另一条 PyMuPDF 路线不受影响。
 
 ## 3. 中英双语约定
 

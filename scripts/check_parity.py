@@ -37,7 +37,8 @@ ASCII_ONLY = re.compile(r"^[\x20-\x7e]+$")
 DERIVED = re.compile(r"<!--\s*derived-from:\s*(\S+?)\s*-->")
 MD_LINK = re.compile(r"!?\[[^\]]*\]\(<?([^)>\s]+)>?\)")
 HTML_IMG = re.compile(r"<img[^>]+src=[\"']([^\"']+)[\"']", re.IGNORECASE)
-SKIP_DIRS = {".git", ".venv", "__pycache__", ".ipynb_checkpoints", "node_modules", ".pytest_cache"}
+# tmp/ 是 PDF 课件示例的临时输出（见 .gitignore），不是课程内容，不参与双语校验
+SKIP_DIRS = {".git", ".venv", "__pycache__", ".ipynb_checkpoints", "node_modules", ".pytest_cache", "tmp"}
 TEXT_SUFFIXES = {".md", ".ipynb", ".py", ".sh", ".ps1", ".json", ".toml", ".txt"}
 PROVENANCE_HEAD_LINES = 6
 
@@ -79,6 +80,11 @@ def md_stats(path: Path) -> tuple:
     return headings, images, text
 
 
+# 母本的「预期输出」单元由 scripts/embed_expected_outputs.py 从实跑结果内嵌，
+# 属于母本独有的一层（镜像不得出现中文语料输出），因此不参与中英单元格数比对。
+EXPECTED_OUTPUT_TAG = "course-expected-output"
+
+
 def notebook_cells(path: Path):
     try:
         notebook = json.loads(path.read_text(encoding="utf-8", errors="replace"))
@@ -87,8 +93,10 @@ def notebook_cells(path: Path):
     cells = notebook.get("cells")
     if not isinstance(cells, list):
         return None
-    markdown = sum(1 for cell in cells if cell.get("cell_type") == "markdown")
-    return len(cells), markdown
+    course = [cell for cell in cells
+              if EXPECTED_OUTPUT_TAG not in (cell.get("metadata") or {}).get("tags", [])]
+    markdown = sum(1 for cell in course if cell.get("cell_type") == "markdown")
+    return len(course), markdown
 
 
 def check(failures: list, rel: str, message: str) -> None:

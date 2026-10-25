@@ -36,6 +36,13 @@ deep-learning-lab 的同类课程要求**两侧目录与文件名都是 ASCII**�
 - 默认启动：`uv sync` → `uv run jupyter lab`；或 `./start-notebooks.sh --language zh-CN|en --module foundations|capstone|frontiers`（Windows 用 `start-notebooks.ps1 -Language ... -Module ...`）。
 - **本机/课堂内核**：`~/env_rag_uv`（独立 uv 工程目录 + `.venv` + Jupyter 内核 `env_rag_uv`），与 `~/env_agent_uv`、`~/env_dl_uv` 同构；它只装课件运行期需要的包，重型的 PDF 解析依赖按需 `uv add`。仓库根 `.venv` 与它互相独立，两侧都用同一份 `.env`。
 - 课件里的实跑输出写成 `**预期输出：**` + ```text 代码块（与 deep-learning-lab 一致），必须由真实环境真实执行得到，不得手写编造；换环境重跑后要同步更新。
+- 落地方式固定为两条命令（仓库根，先执行后内嵌）：`make run` = `scripts/execute_notebooks.py`（用 `env_rag_uv` 内核真实跑，工作目录按课件登记，输出写回 notebook），`make outputs` = `scripts/embed_expected_outputs.py`（把输出内嵌成带 `course-expected-output` 标签的 markdown 单元，可重复执行）。新增课件要同时登记进这两个脚本的任务表。
+- **只有中文母本内嵌**：实跑输出本身是中文语料，进 `english/` 会违反第 3 节的无中日韩文字硬规则。镜像保留「执行后查看输出」的提示，`scripts/check_parity.py` 比对单元格数量时跳过带该标签的母本单元——这是唯一允许的两侧结构差异，不要用别的绕过开关表达。
+- 入库的母本**清空代码单元的原生 outputs**（`--keep-outputs` 可保留）：原生输出带 venv、`/var/folders/.../ipykernel_*` 等机器路径，不进 git；没有实跑输出时脚本跳过，不得覆盖已有「预期输出」块。
+- 摘录规则：文字逐字摘录，超过 3000 字符按字符截断并在块内如实标注省略量；机器相关绝对路径折叠成 `…`，用户主目录折叠成 `~`，ANSI 控制符剥离；图片输出导出到共用的 `assets/`，命名 `<课件主干>-<序号>.png`。
+- LLM 生成的文本与检索命中的页码每次运行都会变，块内内容是**某一次真实运行**的样本，用于对照结构与量级，不得写成逐字断言。
+- `02_综合实战/PDF数据清洗脚本示例.ipynb` 的 Unstructured 路线依赖重型解析栈，登记为 `~/env_rag_uv` 的可选 extra：`uv sync --extra pdf`（拉 torch / timm / transformers / opencv，约 1.5 GB）。extra 里必须钉住 `preshed<3.0.14`：该版本会让 `spacy.load()` 抛 `OverflowError`，Unstructured 把异常吞掉后表现为 fast 策略的 Element 数量全为 `0`。一次普通的 `uv sync`（不带 `--extra pdf`）会把这些包裁掉，该单元随后如实报 `ModuleNotFoundError`——保持诚实，不要为了「全绿」把结果改写成假装成功。
+- **写课程数据的课件必须可复现**：`knowledge_md/` 由 `02_综合实战/02_综合实战-LangChain-进阶版.ipynb` 的 Markdown 预处理章节生成，重跑后 `git status --short knowledge_md knowledge_path` 必须仍为空（内容与仓库一致）；其他示例/演示脚本的输出一律写到 `tmp/`（已 gitignore，`scripts/check_parity.py` 跳过该目录）。PDF 清洗示例早期直接写 `knowledge_md/VMAX-S`，会覆盖语料并静默改变综合实战课件的检索结果，现已改为 `tmp/pdf-cleaning-demo/`。刷新实跑输出前先确认语料干净，否则内嵌的是被污染语料的运行结果。
 - `requirement.txt` 是 Conda 路线的遗留清单，**只读对照**，不要往里加新依赖。
 - 文档中的命令必须注明工作目录；除特别说明外都在仓库根执行。
 

@@ -4,3 +4,6 @@ __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
 .DS_Store
+
+# PDF 课件示例的临时输出（scripts 里的课件会写这里）
+/tmp/
